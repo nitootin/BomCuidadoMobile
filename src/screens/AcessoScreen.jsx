@@ -36,27 +36,26 @@ export default function AcessoScreen({ navigation }) {
 
       {/* Card */}
       <View style={styles.card}>
-        <Text style={styles.cardTitulo}>Digite seu código de acesso</Text>
-        <Text style={styles.cardDesc}>O código foi fornecido pelo seu cuidador</Text>
+        <Text style={styles.cardTitulo}>Acesso do Paciente</Text>
+        <Text style={styles.cardDesc}>Digite seu código de acesso para continuar</Text>
 
-        <Text style={styles.campoLabel}>Código de 8 dígitos</Text>
-
-        <TextInput
-          style={styles.inputCodigo}
-          value={codigo}
-          onChangeText={(v) => {
-            const numeros = v.replace(/[^0-9]/g, '').slice(0, 8);
-            setCodigo(numeros);
-          }}
-          maxLength={8}
-          placeholder="12345678"
-          placeholderTextColor={colors.cinzaBorda}
-          returnKeyType="done"
-          onSubmitEditing={handleEntrar}
-          autoCorrect={false}
-        />
-
-        <Text style={styles.codigoDica}>Código fornecido pelo seu cuidador</Text>
+        <View style={styles.campoBloco}>
+          <Text style={styles.campoLabel}>Código de Acesso</Text>
+          <TextInput
+            style={styles.inputCodigo}
+            value={codigo}
+            onChangeText={(v) => {
+              const numeros = v.replace(/[^0-9]/g, '').slice(0, 8);
+              setCodigo(numeros);
+            }}
+            maxLength={8}
+            placeholder="Digite o código fornecido"
+            placeholderTextColor="#BDBDBD"
+            returnKeyType="done"
+            onSubmitEditing={handleEntrar}
+            autoCorrect={false}
+          />
+        </View>
 
         <TouchableOpacity
           style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
@@ -78,55 +77,57 @@ export default function AcessoScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    backgroundColor: colors.verde,
+    backgroundColor: '#F2F4F3',
     justifyContent: 'center',
-    paddingHorizontal: 28,
-    paddingVertical: 40,
+    paddingHorizontal: 24,
+    paddingVertical: 48,
   },
 
   // Logo
   logoBloco: {
     alignItems: 'center',
-    marginBottom: 40,
-    gap: 10,
+    marginBottom: 32,
+    gap: 8,
   },
   logoIcone: {
-    width: 88,
-    height: 88,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.35)',
-    borderRadius: 28,
+    width: 80,
+    height: 80,
+    backgroundColor: colors.verde,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+    marginBottom: 8,
+    shadowColor: colors.verde,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 5,
   },
   logoEmoji: {
-    fontSize: 40,
+    fontSize: 38,
   },
   logoNome: {
-    fontSize: 32,
+    fontSize: 28,
     fontWeight: '900',
-    color: '#fff',
-    letterSpacing: -0.5,
+    color: colors.texto,
   },
   logoSub: {
-    fontSize: 15,
-    color: 'rgba(255,255,255,0.75)',
+    fontSize: 14,
+    color: colors.textoMudo,
     fontWeight: '400',
   },
 
   // Card
   card: {
     backgroundColor: colors.branco,
-    borderRadius: 28,
+    borderRadius: 24,
     padding: 28,
-    gap: 16,
+    gap: 20,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
     shadowRadius: 16,
-    elevation: 6,
+    elevation: 4,
   },
   cardTitulo: {
     fontSize: 20,
@@ -139,54 +140,49 @@ const styles = StyleSheet.create({
     color: colors.textoMudo,
     textAlign: 'center',
     lineHeight: 20,
-    marginTop: -8,
+    marginTop: -12,
   },
 
-  // Input
+  // Campo
+  campoBloco: {
+    gap: 8,
+  },
   campoLabel: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.textoMudo,
+    fontSize: 14,
+    fontWeight: '700',
+    color: colors.texto,
   },
   inputCodigo: {
-    height: 62,
-    borderWidth: 2,
-    borderColor: colors.cinzaBorda,
-    borderRadius: 16,
-    textAlign: 'center',
-    fontSize: 28,
-    fontWeight: '800',
-    letterSpacing: 8,
-    color: colors.verdeEsc,
-    backgroundColor: colors.cinzaBg,
+    height: 56,
+    borderWidth: 1.5,
+    borderColor: '#E0E0E0',
+    borderRadius: 14,
+    paddingHorizontal: 16,
+    fontSize: 18,
+    color: colors.texto,
+    backgroundColor: '#FAFAFA',
     outlineStyle: 'none',
-  },
-  codigoDica: {
-    fontSize: 12,
-    color: colors.textoMudo,
-    textAlign: 'center',
-    marginTop: -8,
   },
 
   // Botão
   btnEntrar: {
     width: '100%',
-    paddingVertical: 18,
+    paddingVertical: 17,
     backgroundColor: colors.verde,
-    borderRadius: 18,
+    borderRadius: 16,
     alignItems: 'center',
-    opacity: 0.35,
-    shadowColor: colors.verde,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 4,
+    opacity: 0.4,
   },
   btnEntrarOk: {
     opacity: 1,
+    shadowColor: colors.verde,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    elevation: 4,
   },
   btnEntrarTexto: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '800',
     color: '#fff',
   },
@@ -195,7 +191,7 @@ const styles = StyleSheet.create({
   ajudaBtn: {
     fontSize: 14,
     color: colors.textoMudo,
-    fontWeight: '500',
+    fontWeight: '600',
     textAlign: 'center',
   },
 });
