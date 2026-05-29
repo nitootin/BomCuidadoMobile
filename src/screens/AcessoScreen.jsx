@@ -5,10 +5,7 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
+  ScrollView,
 } from 'react-native';
 import { colors } from '../../src/constants/colors';
 
@@ -24,67 +21,63 @@ export default function AcessoScreen({ navigation }) {
   }
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        {/* Logo */}
-        <View style={styles.logoBloco}>
-          <View style={styles.logoIcone}>
-            {/* Substitua por um <Image> com o logo real quando disponível */}
-            <Text style={styles.logoEmoji}>❤️</Text>
-          </View>
-          <Text style={styles.logoNome}>BomCuidado</Text>
-          <Text style={styles.logoSub}>Cuidando de você com carinho</Text>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      keyboardShouldPersistTaps="handled"
+    >
+      {/* Logo */}
+      <View style={styles.logoBloco}>
+        <View style={styles.logoIcone}>
+          <Text style={styles.logoEmoji}>❤️</Text>
         </View>
+        <Text style={styles.logoNome}>BomCuidado</Text>
+        <Text style={styles.logoSub}>Cuidando de você com carinho</Text>
+      </View>
 
-        {/* Card */}
-        <View style={styles.card}>
-          <Text style={styles.cardTitulo}>Digite seu código de acesso</Text>
-          <Text style={styles.cardDesc}>O código foi fornecido pelo seu cuidador</Text>
+      {/* Card */}
+      <View style={styles.card}>
+        <Text style={styles.cardTitulo}>Digite seu código de acesso</Text>
+        <Text style={styles.cardDesc}>O código foi fornecido pelo seu cuidador</Text>
 
-          <Text style={styles.campoLabel}>Código de 8 dígitos</Text>
+        <Text style={styles.campoLabel}>Código de 8 dígitos</Text>
 
-          <TextInput
-            style={styles.inputCodigo}
-            value={codigo}
-            onChangeText={(v) => {
-              // Apenas números, máximo 8
-              const numeros = v.replace(/[^0-9]/g, '').slice(0, 8);
-              setCodigo(numeros);
-            }}
-            keyboardType="number-pad"
-            maxLength={8}
-            placeholder="12345678"
-            placeholderTextColor={colors.cinzaBorda}
-            returnKeyType="done"
-            onSubmitEditing={handleEntrar}
-          />
+        <TextInput
+          style={styles.inputCodigo}
+          value={codigo}
+          onChangeText={(v) => {
+            const numeros = v.replace(/[^0-9]/g, '').slice(0, 8);
+            setCodigo(numeros);
+          }}
+          maxLength={8}
+          placeholder="12345678"
+          placeholderTextColor={colors.cinzaBorda}
+          returnKeyType="done"
+          onSubmitEditing={handleEntrar}
+          autoCorrect={false}
+        />
 
-          <Text style={styles.codigoDica}>Código fornecido pelo seu cuidador</Text>
+        <Text style={styles.codigoDica}>Código fornecido pelo seu cuidador</Text>
 
-          <TouchableOpacity
-            style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
-            onPress={handleEntrar}
-            disabled={!codigoValido}
-            activeOpacity={0.85}
-          >
-            <Text style={styles.btnEntrarTexto}>Entrar</Text>
-          </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
+          onPress={handleEntrar}
+          disabled={!codigoValido}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.btnEntrarTexto}>Entrar</Text>
+        </TouchableOpacity>
 
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.ajudaBtn}>Precisa de ajuda?</Text>
-          </TouchableOpacity>
-        </View>
-      </KeyboardAvoidingView>
-    </TouchableWithoutFeedback>
+        <TouchableOpacity activeOpacity={0.7}>
+          <Text style={styles.ajudaBtn}>Precisa de ajuda?</Text>
+        </TouchableOpacity>
+      </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
     backgroundColor: colors.verde,
     justifyContent: 'center',
     paddingHorizontal: 28,
@@ -112,7 +105,6 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   logoNome: {
-    fontFamily: 'Nunito',
     fontSize: 32,
     fontWeight: '900',
     color: '#fff',
@@ -137,7 +129,6 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   cardTitulo: {
-    fontFamily: 'Nunito',
     fontSize: 20,
     fontWeight: '800',
     color: colors.texto,
@@ -168,6 +159,7 @@ const styles = StyleSheet.create({
     letterSpacing: 8,
     color: colors.verdeEsc,
     backgroundColor: colors.cinzaBg,
+    outlineStyle: 'none',
   },
   codigoDica: {
     fontSize: 12,
@@ -194,7 +186,6 @@ const styles = StyleSheet.create({
     opacity: 1,
   },
   btnEntrarTexto: {
-    fontFamily: 'Nunito',
     fontSize: 20,
     fontWeight: '800',
     color: '#fff',
