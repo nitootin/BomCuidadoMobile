@@ -5,7 +5,7 @@ function conteudoPaginado(data) {
 }
 
 export async function listarMeusAlertas() {
-  const data = await apiFetch('/alertas/me');
+  const data = await apiFetch('/alertas/me?size=100&sort=id,asc');
   return conteudoPaginado(data);
 }
 
