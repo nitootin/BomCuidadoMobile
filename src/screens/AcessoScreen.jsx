@@ -7,16 +7,28 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
+import { loginIdoso } from '../api/authApi';
 import { colors } from '../../src/constants/colors';
 
 export default function AcessoScreen({ navigation }) {
   const [codigo, setCodigo] = useState('');
+  const [erro, setErro] = useState('');
+  const [carregando, setCarregando] = useState(false);
 
-  const codigoValido = codigo.length === 8;
+  const codigoValido = codigo.trim().length >= 6;
 
-  function handleEntrar() {
-    if (codigoValido) {
-      navigation.navigate('Home');
+  async function handleEntrar() {
+    if (!codigoValido || carregando) return;
+
+    try {
+      setCarregando(true);
+      setErro('');
+      await loginIdoso(codigo.trim());
+      navigation.replace('Home');
+    } catch (error) {
+      setErro(error.message || 'Nao foi possivel acessar. Tente novamente.');
+    } finally {
+      setCarregando(false);
     }
   }
 
@@ -45,25 +57,32 @@ export default function AcessoScreen({ navigation }) {
             style={styles.inputCodigo}
             value={codigo}
             onChangeText={(v) => {
-              const numeros = v.replace(/[^0-9]/g, '').slice(0, 8);
-              setCodigo(numeros);
+              const codigoLimpo = v.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 11).toUpperCase();
+              setCodigo(codigoLimpo);
+              if (erro) setErro('');
             }}
-            maxLength={8}
+            maxLength={11}
             placeholder="Digite o código fornecido"
             placeholderTextColor="#BDBDBD"
             returnKeyType="done"
             onSubmitEditing={handleEntrar}
+            autoCapitalize="characters"
             autoCorrect={false}
+            editable={!carregando}
           />
         </View>
+
+        {erro ? <Text style={styles.erroTexto}>{erro}</Text> : null}
 
         <TouchableOpacity
           style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
           onPress={handleEntrar}
-          disabled={!codigoValido}
+          disabled={!codigoValido || carregando}
           activeOpacity={0.85}
         >
-          <Text style={styles.btnEntrarTexto}>Entrar</Text>
+          <Text style={styles.btnEntrarTexto}>
+            {carregando ? 'Entrando...' : 'Entrar'}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity activeOpacity={0.7}>
@@ -162,6 +181,13 @@ const styles = StyleSheet.create({
     color: colors.texto,
     backgroundColor: '#FAFAFA',
     outlineStyle: 'none',
+  },
+  erroTexto: {
+    color: '#C62828',
+    fontSize: 13,
+    fontWeight: '600',
+    textAlign: 'center',
+    marginTop: -8,
   },
 
   // Botão
