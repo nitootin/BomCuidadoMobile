@@ -31,18 +31,42 @@ function formatarDataHoje() {
   });
 }
 
+function obterTimestamp(data) {
+  const valor = new Date(data);
+  return Number.isNaN(valor.getTime()) ? Number.MAX_SAFE_INTEGER : valor.getTime();
+}
+
+function ehAlertaMedicacao(alerta) {
+  return alerta.tipoAlerta === 'REMEDIO' || Boolean(alerta.prescricaoId || alerta.remedioNome);
+}
+
+function selecionarProximasMedicacoes(alertas) {
+  const agora = Date.now();
+
+  return alertas
+    .filter(ehAlertaMedicacao)
+    .filter((alerta) => alerta.statusAlertas !== 'REALIZADO')
+    .sort((a, b) => {
+      const diffA = Math.abs(obterTimestamp(a.dataAgendada) - agora);
+      const diffB = Math.abs(obterTimestamp(b.dataAgendada) - agora);
+      return diffA - diffB;
+    })
+    .slice(0, 3);
+}
+
 function normalizarAlerta(alerta) {
   const realizado = alerta.statusAlertas === 'REALIZADO';
-  const remedio = alerta.tipoAlerta === 'REMEDIO';
+  const horarioAgendado = obterTimestamp(alerta.dataAgendada);
+  const atrasado = !realizado && horarioAgendado < Date.now();
 
   return {
     id: alerta.id,
-    nome: alerta.remedioNome || alerta.tipoAlerta || 'Alerta',
+    nome: alerta.remedioNome || 'Medicamento',
     horario: formatarHorario(alerta.dataAgendada),
-    dose: remedio ? 'Medicamento' : 'Compromisso',
-    status: realizado ? 'tomou' : 'atrasado',
+    dose: 'Medicamento',
+    status: realizado ? 'tomou' : atrasado ? 'atrasado' : 'pendente',
     confirmadoAs: realizado ? formatarHorario(alerta.dataAtualizacao) : null,
-    corFundo: remedio ? '#E3F2FD' : '#F3E5F5',
+    corFundo: '#E3F2FD',
   };
 }
 
@@ -53,6 +77,13 @@ function MedCard({ med, onConfirmar }) {
       : med.status === 'tomou'
         ? colors.verdeBorda
         : colors.cinzaBorda;
+
+  const badgeStyle =
+    med.status === 'atrasado'
+      ? styles.badgeAtrasado
+      : med.status === 'tomou'
+        ? styles.badgeTomou
+        : styles.badgePendente;
 
   return (
     <View style={[styles.medCard, { borderColor }]}>
@@ -65,16 +96,17 @@ function MedCard({ med, onConfirmar }) {
           <Text style={styles.medHorario}>{med.horario} - {med.dose}</Text>
         </View>
         <Text
-          style={[
-            styles.medBadge,
-            med.status === 'atrasado' ? styles.badgeAtrasado : styles.badgeTomou,
-          ]}
+          style={[styles.medBadge, badgeStyle]}
         >
-          {med.status === 'tomou' ? 'Tomou' : med.horario}
+          {med.status === 'tomou'
+            ? 'Tomou'
+            : med.status === 'atrasado'
+              ? 'Atrasado'
+              : med.horario}
         </Text>
       </View>
 
-      {med.status === 'atrasado' ? (
+      {med.status !== 'tomou' ? (
         <TouchableOpacity
           style={styles.btnConfirmar}
           onPress={() => onConfirmar(med.id)}
@@ -102,7 +134,8 @@ export default function HomeScreen() {
       setCarregando(true);
       setErro('');
       const lista = await listarMeusAlertas();
-      setMedicacoes(lista.map(normalizarAlerta));
+      const proximasMedicacoes = selecionarProximasMedicacoes(lista);
+      setMedicacoes(proximasMedicacoes.map(normalizarAlerta));
     } catch (error) {
       setErro(error.message || 'Nao foi possivel carregar os alertas.');
     } finally {
@@ -116,11 +149,8 @@ export default function HomeScreen() {
 
   async function handleConfirmar(id) {
     try {
-      const atualizado = await confirmarAlerta(id);
-      const alertaNormalizado = normalizarAlerta(atualizado);
-      setMedicacoes((prev) =>
-        prev.map((med) => (med.id === id ? alertaNormalizado : med))
-      );
+      await confirmarAlerta(id);
+      await carregarAlertas();
     } catch (error) {
       Alert.alert('Erro', error.message || 'Nao foi possivel confirmar o alerta.');
     }
@@ -161,7 +191,7 @@ export default function HomeScreen() {
           </Text>
         </TouchableOpacity>
 
-        <Text style={styles.secaoTitulo}>Medicacoes de Hoje</Text>
+        <Text style={styles.secaoTitulo}>Proximas medicacoes</Text>
 
         {carregando ? (
           <View style={styles.estadoCard}>
@@ -177,7 +207,7 @@ export default function HomeScreen() {
           ))
         ) : (
           <View style={styles.estadoCard}>
-            <Text style={styles.estadoTexto}>Nenhum alerta para hoje.</Text>
+            <Text style={styles.estadoTexto}>Nenhuma medicacao pendente.</Text>
           </View>
         )}
       </ScrollView>
@@ -252,6 +282,7 @@ const styles = StyleSheet.create({
   medBadge: { fontSize: 13, fontWeight: '700' },
   badgeAtrasado: { color: '#F57C00' },
   badgeTomou: { color: colors.verde },
+  badgePendente: { color: colors.textoMudo },
   btnConfirmar: {
     backgroundColor: colors.verde,
     borderRadius: 15,
