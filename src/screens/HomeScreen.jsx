@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { confirmarAlerta, listarMeusAlertas } from '../api/alertasApi';
 import { colors } from '../constants/colors';
+import { agendarNotificacoesMedicacoes } from '../services/notificationService';
 
 function formatarHorario(data) {
   if (!data) return 'Horario nao informado';
@@ -134,6 +135,7 @@ export default function HomeScreen() {
       setCarregando(true);
       setErro('');
       const lista = await listarMeusAlertas();
+      await agendarNotificacoesMedicacoes(lista).catch(() => null);
       const proximasMedicacoes = selecionarProximasMedicacoes(lista);
       setMedicacoes(proximasMedicacoes.map(normalizarAlerta));
     } catch (error) {
