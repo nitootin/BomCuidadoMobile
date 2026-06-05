@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import {
   Alert,
+  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -9,8 +10,10 @@ import {
   View,
 } from 'react-native';
 import { confirmarAlerta, listarMeusAlertas } from '../api/alertasApi';
+import { buscarContatoEmergencia } from '../api/vinculosApi';
 import { colors } from '../constants/colors';
 import { agendarNotificacoesMedicacoes } from '../services/notificationService';
+import { obterUsuario } from '../services/sessionService';
 
 function formatarHorario(data) {
   if (!data) return 'Horario nao informado';
@@ -69,6 +72,13 @@ function normalizarAlerta(alerta) {
     confirmadoAs: realizado ? formatarHorario(alerta.dataAtualizacao) : null,
     corFundo: '#E3F2FD',
   };
+}
+
+function montarTelefoneContato(contato) {
+  const ddd = String(contato?.ddd || '').replace(/\D/g, '');
+  const telefone = String(contato?.telefone || '').replace(/\D/g, '');
+
+  return `${ddd}${telefone}`;
 }
 
 function MedCard({ med, onConfirmar }) {
@@ -158,12 +168,37 @@ export default function HomeScreen() {
     }
   }
 
-  function handleEmergencia() {
-    setLigando(true);
-    Alert.alert('Emergencia', 'Ligando para o servico de socorro...', [
-      { text: 'OK', onPress: () => setLigando(false) },
-    ]);
-    setTimeout(() => setLigando(false), 3000);
+  async function handleEmergencia() {
+    if (ligando) return;
+
+    try {
+      setLigando(true);
+
+      const usuario = await obterUsuario();
+      if (!usuario?.id) {
+        throw new Error('Sessao do idoso nao encontrada. Faca login novamente.');
+      }
+
+      const contato = await buscarContatoEmergencia(usuario.id);
+      const telefone = montarTelefoneContato(contato);
+
+      if (!telefone) {
+        throw new Error('Contato de emergencia sem telefone cadastrado.');
+      }
+
+      const url = `tel:${telefone}`;
+      const podeLigar = await Linking.canOpenURL(url);
+
+      if (!podeLigar) {
+        throw new Error('Este dispositivo nao permite iniciar ligacoes.');
+      }
+
+      await Linking.openURL(url);
+    } catch (error) {
+      Alert.alert('Emergencia', error.message || 'Nao foi possivel ligar para o cuidador.');
+    } finally {
+      setLigando(false);
+    }
   }
 
   return (
@@ -189,7 +224,7 @@ export default function HomeScreen() {
             {ligando ? 'LIGANDO...' : 'EMERGENCIA'}
           </Text>
           <Text style={styles.emgSub}>
-            {ligando ? 'Conectando ao socorro...' : 'Toque para ligar para socorro'}
+            {ligando ? 'Buscando contato...' : 'Toque para ligar para o cuidador'}
           </Text>
         </TouchableOpacity>
 
