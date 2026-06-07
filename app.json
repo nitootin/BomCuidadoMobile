@@ -16,14 +16,20 @@
         "backgroundImage": "./assets/android-icon-background.png",
         "monochromeImage": "./assets/android-icon-monochrome.png"
       },
-      "package": "com.anonymous.BomCuidadoApp"
+      "package": "com.anonymous.BomCuidadoApp",
+      "permissions": [
+        "SYSTEM_ALERT_WINDOW",
+        "CALL_PHONE"
+      ],
+      "usesCleartextTraffic": true
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-secure-store",
-      "expo-notifications"
+      "expo-notifications",
+      "./plugins/withEmergencyOverlay"
     ]
   }
 }

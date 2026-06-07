@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
   Alert,
-  Linking,
   SafeAreaView,
   ScrollView,
   StyleSheet,
@@ -10,10 +9,9 @@ import {
   View,
 } from 'react-native';
 import { confirmarAlerta, listarMeusAlertas } from '../api/alertasApi';
-import { buscarContatoEmergencia } from '../api/vinculosApi';
 import { colors } from '../constants/colors';
+import { EmergencyCallWidget } from '../components/EmergencyCallWidget';
 import { agendarNotificacoesMedicacoes } from '../services/notificationService';
-import { obterUsuario } from '../services/sessionService';
 
 function formatarHorario(data) {
   if (!data) return 'Horario nao informado';
@@ -74,13 +72,6 @@ function normalizarAlerta(alerta) {
   };
 }
 
-function montarTelefoneContato(contato) {
-  const ddd = String(contato?.ddd || '').replace(/\D/g, '');
-  const telefone = String(contato?.telefone || '').replace(/\D/g, '');
-
-  return `${ddd}${telefone}`;
-}
-
 function MedCard({ med, onConfirmar }) {
   const borderColor =
     med.status === 'atrasado'
@@ -138,7 +129,6 @@ export default function HomeScreen() {
   const [medicacoes, setMedicacoes] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState('');
-  const [ligando, setLigando] = useState(false);
 
   async function carregarAlertas() {
     try {
@@ -168,39 +158,6 @@ export default function HomeScreen() {
     }
   }
 
-  async function handleEmergencia() {
-    if (ligando) return;
-
-    try {
-      setLigando(true);
-
-      const usuario = await obterUsuario();
-      if (!usuario?.id) {
-        throw new Error('Sessao do idoso nao encontrada. Faca login novamente.');
-      }
-
-      const contato = await buscarContatoEmergencia(usuario.id);
-      const telefone = montarTelefoneContato(contato);
-
-      if (!telefone) {
-        throw new Error('Contato de emergencia sem telefone cadastrado.');
-      }
-
-      const url = `tel:${telefone}`;
-      const podeLigar = await Linking.canOpenURL(url);
-
-      if (!podeLigar) {
-        throw new Error('Este dispositivo nao permite iniciar ligacoes.');
-      }
-
-      await Linking.openURL(url);
-    } catch (error) {
-      Alert.alert('Emergencia', error.message || 'Nao foi possivel ligar para o cuidador.');
-    } finally {
-      setLigando(false);
-    }
-  }
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -214,19 +171,7 @@ export default function HomeScreen() {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <TouchableOpacity
-          style={styles.btnEmergencia}
-          onPress={handleEmergencia}
-          activeOpacity={0.9}
-        >
-          <Text style={styles.emgIco}>!</Text>
-          <Text style={styles.emgLabel}>
-            {ligando ? 'LIGANDO...' : 'EMERGENCIA'}
-          </Text>
-          <Text style={styles.emgSub}>
-            {ligando ? 'Buscando contato...' : 'Toque para ligar para o cuidador'}
-          </Text>
-        </TouchableOpacity>
+        <EmergencyCallWidget />
 
         <Text style={styles.secaoTitulo}>Proximas medicacoes</Text>
 
@@ -275,22 +220,6 @@ const styles = StyleSheet.create({
     gap: 16,
     paddingBottom: 40,
   },
-  btnEmergencia: {
-    backgroundColor: colors.vermelho,
-    borderRadius: 26,
-    paddingVertical: 26,
-    paddingHorizontal: 20,
-    alignItems: 'center',
-    gap: 6,
-    shadowColor: colors.vermelho,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
-    shadowRadius: 16,
-    elevation: 6,
-  },
-  emgIco: { fontSize: 36, color: '#fff', fontWeight: '900' },
-  emgLabel: { fontSize: 24, fontWeight: '900', color: '#fff', letterSpacing: 1.5 },
-  emgSub: { fontSize: 13, color: 'rgba(255,255,255,0.75)' },
   secaoTitulo: {
     fontSize: 18,
     fontWeight: '800',
