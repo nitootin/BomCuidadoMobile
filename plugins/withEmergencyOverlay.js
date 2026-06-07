@@ -230,7 +230,7 @@ public class EmergencyOverlayService extends Service {
     private void callEmergencyContact() {
         if (phoneNumber == null || phoneNumber.trim().isEmpty()) return;
 
-        Intent intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + phoneNumber));
+        Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + phoneNumber));
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
     }

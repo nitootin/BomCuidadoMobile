@@ -70,8 +70,8 @@ adb install -r android/app/build/outputs/apk/debug/app-debug.apk
 ## Observacoes
 
 - O overlay usa `WindowManager` com `TYPE_APPLICATION_OVERLAY` no Android 8+.
-- O clique no overlay usa `ACTION_DIAL`, entao abre a tela de ligacao com o numero preenchido.
-- Chamada direta sem confirmacao exige fluxo adicional de permissao runtime `CALL_PHONE` e uso de `ACTION_CALL`.
+- O clique no overlay usa `ACTION_CALL`, entao dispara a chamada direta para o contato emergencial.
+- Na primeira ativacao, o app solicita a permissao runtime `CALL_PHONE`.
 
 ## Erro Network request failed
 
