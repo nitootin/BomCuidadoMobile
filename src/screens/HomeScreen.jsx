@@ -11,6 +11,7 @@ import {
 import { confirmarAlerta, listarMeusAlertas } from '../api/alertasApi';
 import { colors } from '../constants/colors';
 import { EmergencyCallWidget } from '../components/EmergencyCallWidget';
+import { BrandLogo } from '../components/BrandLogo';
 import { agendarNotificacoesMedicacoes } from '../services/notificationService';
 
 function formatarHorario(data) {
@@ -68,7 +69,7 @@ function normalizarAlerta(alerta) {
     dose: 'Medicamento',
     status: realizado ? 'tomou' : atrasado ? 'atrasado' : 'pendente',
     confirmadoAs: realizado ? formatarHorario(alerta.dataAtualizacao) : null,
-    corFundo: '#E3F2FD',
+    corFundo: colors.verdeClaro,
   };
 }
 
@@ -91,7 +92,7 @@ function MedCard({ med, onConfirmar }) {
     <View style={[styles.medCard, { borderColor }]}>
       <View style={styles.medTopo}>
         <View style={[styles.medIco, { backgroundColor: med.corFundo }]}>
-          <Text style={styles.medIcoTexto}>+</Text>
+          <Text style={styles.medIcoTexto}>Rx</Text>
         </View>
         <View style={styles.medInfo}>
           <Text style={styles.medNome}>{med.nome}</Text>
@@ -161,9 +162,11 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.headerOla}>Ola,</Text>
-        <Text style={styles.headerNome}>BomCuidado</Text>
-        <Text style={styles.headerData}>{formatarDataHoje()}</Text>
+        <BrandLogo size="sm" />
+        <View style={styles.headerTexto}>
+          <Text style={styles.headerTitulo}>Painel do paciente</Text>
+          <Text style={styles.headerData}>{formatarDataHoje()}</Text>
+        </View>
       </View>
 
       <ScrollView
@@ -173,7 +176,10 @@ export default function HomeScreen() {
       >
         <EmergencyCallWidget />
 
-        <Text style={styles.secaoTitulo}>Proximas medicacoes</Text>
+        <View style={styles.secaoCabecalho}>
+          <Text style={styles.secaoTitulo}>Proximas medicacoes</Text>
+          <Text style={styles.secaoSubtitulo}>Alertas pendentes e confirmacoes do dia</Text>
+        </View>
 
         {carregando ? (
           <View style={styles.estadoCard}>
@@ -204,54 +210,79 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: colors.branco,
-    paddingTop: 16,
-    paddingBottom: 20,
+    paddingTop: 14,
+    paddingBottom: 16,
     paddingHorizontal: 24,
+    flexDirection: 'row',
     alignItems: 'center',
+    gap: 16,
     borderBottomWidth: 1,
     borderBottomColor: colors.cinzaBorda,
   },
-  headerOla: { fontSize: 16, color: colors.textoMudo },
-  headerNome: { fontSize: 32, fontWeight: '900', color: colors.texto, marginVertical: 2 },
-  headerData: { fontSize: 13, color: colors.textoMudo, textTransform: 'capitalize' },
+  headerTexto: {
+    flex: 1,
+    gap: 4,
+  },
+  headerTitulo: {
+    fontSize: 17,
+    fontWeight: '700',
+    color: colors.texto,
+  },
+  headerData: {
+    fontSize: 13,
+    color: colors.textoSecundario,
+    textTransform: 'capitalize',
+  },
   scroll: { flex: 1 },
   scrollContent: {
     padding: 20,
     gap: 16,
     paddingBottom: 40,
   },
+  secaoCabecalho: {
+    gap: 4,
+    marginTop: 2,
+  },
   secaoTitulo: {
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: '700',
     color: colors.texto,
-    marginTop: 4,
+  },
+  secaoSubtitulo: {
+    fontSize: 13,
+    color: colors.textoSecundario,
   },
   medCard: {
     backgroundColor: colors.branco,
-    borderRadius: 22,
-    borderWidth: 2,
+    borderRadius: 12,
+    borderWidth: 1,
     padding: 18,
     gap: 14,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 2,
   },
   medTopo: { flexDirection: 'row', alignItems: 'center', gap: 14 },
   medIco: {
-    width: 50,
-    height: 50,
-    borderRadius: 16,
+    width: 48,
+    height: 48,
+    borderRadius: 12,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  medIcoTexto: { fontSize: 24, fontWeight: '900', color: colors.verde },
+  medIcoTexto: { fontSize: 16, fontWeight: '900', color: colors.verde },
   medInfo: { flex: 1 },
-  medNome: { fontSize: 17, fontWeight: '800', color: colors.texto },
+  medNome: { fontSize: 17, fontWeight: '700', color: colors.texto },
   medHorario: { fontSize: 13, color: colors.textoMudo, marginTop: 2 },
   medBadge: { fontSize: 13, fontWeight: '700' },
-  badgeAtrasado: { color: '#F57C00' },
+  badgeAtrasado: { color: '#b85f00' },
   badgeTomou: { color: colors.verde },
   badgePendente: { color: colors.textoMudo },
   btnConfirmar: {
     backgroundColor: colors.verde,
-    borderRadius: 15,
+    borderRadius: 14,
     paddingVertical: 15,
     alignItems: 'center',
     shadowColor: colors.verde,
@@ -260,18 +291,18 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 3,
   },
-  btnConfirmarTexto: { fontSize: 17, fontWeight: '800', color: '#fff' },
+  btnConfirmarTexto: { fontSize: 16, fontWeight: '700', color: '#fff' },
   confirmadoBox: {
     backgroundColor: colors.verdeClaro,
-    borderRadius: 14,
+    borderRadius: 12,
     paddingVertical: 14,
     alignItems: 'center',
   },
   confirmadoTexto: { fontSize: 16, fontWeight: '700', color: colors.verde },
   estadoCard: {
     backgroundColor: colors.branco,
-    borderRadius: 22,
-    borderWidth: 1.5,
+    borderRadius: 12,
+    borderWidth: 1,
     borderColor: colors.cinzaBorda,
     padding: 22,
     alignItems: 'center',

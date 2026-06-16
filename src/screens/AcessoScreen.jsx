@@ -1,14 +1,16 @@
 import { useState } from 'react';
 import {
-  View,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  StyleSheet,
-  ScrollView,
+  View,
 } from 'react-native';
 import { loginIdoso } from '../api/authApi';
-import { colors } from '../../src/constants/colors';
+import { BrandLogo } from '../components/BrandLogo';
+import { colors } from '../constants/colors';
 
 export default function AcessoScreen({ navigation }) {
   const [codigo, setCodigo] = useState('');
@@ -33,115 +35,89 @@ export default function AcessoScreen({ navigation }) {
   }
 
   return (
-    <ScrollView
-      contentContainerStyle={styles.container}
-      keyboardShouldPersistTaps="handled"
-    >
-      {/* Logo */}
-      <View style={styles.logoBloco}>
-        <View style={styles.logoIcone}>
-          <Text style={styles.logoEmoji}>❤️</Text>
-        </View>
-        <Text style={styles.logoNome}>BomCuidado</Text>
-        <Text style={styles.logoSub}>Cuidando de você com carinho</Text>
-      </View>
-
-      {/* Card */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitulo}>Acesso do Paciente</Text>
-        <Text style={styles.cardDesc}>Digite seu código de acesso para continuar</Text>
-
-        <View style={styles.campoBloco}>
-          <Text style={styles.campoLabel}>Código de Acesso</Text>
-          <TextInput
-            style={styles.inputCodigo}
-            value={codigo}
-            onChangeText={(v) => {
-              const codigoLimpo = v.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 11).toUpperCase();
-              setCodigo(codigoLimpo);
-              if (erro) setErro('');
-            }}
-            maxLength={11}
-            placeholder="Digite o código fornecido"
-            placeholderTextColor="#BDBDBD"
-            returnKeyType="done"
-            onSubmitEditing={handleEntrar}
-            autoCapitalize="characters"
-            autoCorrect={false}
-            editable={!carregando}
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.logoBloco}>
+          <BrandLogo
+            size="lg"
+            centered
+            subtitle="Acompanhamento de medicacoes e cuidados"
           />
         </View>
 
-        {erro ? <Text style={styles.erroTexto}>{erro}</Text> : null}
+        <View style={styles.card}>
+          <Text style={styles.cardTitulo}>Acesso do paciente</Text>
+          <Text style={styles.cardDesc}>Digite seu codigo de acesso para continuar</Text>
 
-        <TouchableOpacity
-          style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
-          onPress={handleEntrar}
-          disabled={!codigoValido || carregando}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.btnEntrarTexto}>
-            {carregando ? 'Entrando...' : 'Entrar'}
-          </Text>
-        </TouchableOpacity>
+          <View style={styles.campoBloco}>
+            <Text style={styles.campoLabel}>Codigo de acesso</Text>
+            <TextInput
+              style={styles.inputCodigo}
+              value={codigo}
+              onChangeText={(v) => {
+                const codigoLimpo = v.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 11).toUpperCase();
+                setCodigo(codigoLimpo);
+                if (erro) setErro('');
+              }}
+              maxLength={11}
+              placeholder="Digite o codigo fornecido"
+              placeholderTextColor="#9a9a9a"
+              returnKeyType="done"
+              onSubmitEditing={handleEntrar}
+              autoCapitalize="characters"
+              autoCorrect={false}
+              editable={!carregando}
+            />
+          </View>
 
-        <TouchableOpacity activeOpacity={0.7}>
-          <Text style={styles.ajudaBtn}>Precisa de ajuda?</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          {erro ? <Text style={styles.erroTexto}>{erro}</Text> : null}
+
+          <TouchableOpacity
+            style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
+            onPress={handleEntrar}
+            disabled={!codigoValido || carregando}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.btnEntrarTexto}>
+              {carregando ? 'Entrando...' : 'Entrar'}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity activeOpacity={0.7}>
+            <Text style={styles.ajudaBtn}>Precisa de ajuda?</Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: colors.cinzaBg,
+  },
   container: {
     flexGrow: 1,
-    backgroundColor: '#F2F4F3',
+    backgroundColor: colors.cinzaBg,
     justifyContent: 'center',
     paddingHorizontal: 24,
     paddingVertical: 48,
   },
-
-  // Logo
   logoBloco: {
     alignItems: 'center',
-    marginBottom: 32,
-    gap: 8,
+    marginBottom: 34,
   },
-  logoIcone: {
-    width: 80,
-    height: 80,
-    backgroundColor: colors.verde,
-    borderRadius: 22,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 8,
-    shadowColor: colors.verde,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 5,
-  },
-  logoEmoji: {
-    fontSize: 38,
-  },
-  logoNome: {
-    fontSize: 28,
-    fontWeight: '900',
-    color: colors.texto,
-  },
-  logoSub: {
-    fontSize: 14,
-    color: colors.textoMudo,
-    fontWeight: '400',
-  },
-
-  // Card
   card: {
     backgroundColor: colors.branco,
-    borderRadius: 24,
+    borderRadius: 12,
     padding: 28,
     gap: 20,
+    borderWidth: 1,
+    borderColor: colors.cinzaBorda,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.07,
@@ -150,7 +126,7 @@ const styles = StyleSheet.create({
   },
   cardTitulo: {
     fontSize: 20,
-    fontWeight: '800',
+    fontWeight: '700',
     color: colors.texto,
     textAlign: 'center',
   },
@@ -161,41 +137,37 @@ const styles = StyleSheet.create({
     lineHeight: 20,
     marginTop: -12,
   },
-
-  // Campo
   campoBloco: {
     gap: 8,
   },
   campoLabel: {
     fontSize: 14,
-    fontWeight: '700',
+    fontWeight: '600',
     color: colors.texto,
   },
   inputCodigo: {
     height: 56,
-    borderWidth: 1.5,
-    borderColor: '#E0E0E0',
-    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: colors.cinzaBorda,
+    borderRadius: 12,
     paddingHorizontal: 16,
     fontSize: 18,
     color: colors.texto,
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.inputBg,
     outlineStyle: 'none',
   },
   erroTexto: {
-    color: '#C62828',
+    color: colors.vermelho,
     fontSize: 13,
     fontWeight: '600',
     textAlign: 'center',
     marginTop: -8,
   },
-
-  // Botão
   btnEntrar: {
     width: '100%',
-    paddingVertical: 17,
+    paddingVertical: 15,
     backgroundColor: colors.verde,
-    borderRadius: 16,
+    borderRadius: 14,
     alignItems: 'center',
     opacity: 0.4,
   },
@@ -208,15 +180,13 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   btnEntrarTexto: {
-    fontSize: 18,
-    fontWeight: '800',
-    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
+    color: colors.branco,
   },
-
-  // Ajuda
   ajudaBtn: {
     fontSize: 14,
-    color: colors.textoMudo,
+    color: colors.verde,
     fontWeight: '600',
     textAlign: 'center',
   },
