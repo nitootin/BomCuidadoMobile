@@ -69,9 +69,9 @@ export function EmergencyCallWidget() {
       disabled={ligando}
     >
       <Text style={styles.icon}>!</Text>
-      <Text style={styles.label}>{ligando ? 'LIGANDO...' : 'EMERGENCIA'}</Text>
+      <Text style={styles.label}>{ligando ? 'Ligando...' : 'Emergencia'}</Text>
       <Text style={styles.subLabel}>
-        {ligando ? 'Ativando widget...' : 'Toque para ativar o widget'}
+        {ligando ? 'Ativando widget...' : 'Toque para ligar ao cuidador'}
       </Text>
     </TouchableOpacity>
   );
@@ -79,19 +79,21 @@ export function EmergencyCallWidget() {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.vermelho,
-    borderRadius: 26,
-    paddingVertical: 26,
+    backgroundColor: colors.vermelhoClaro,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#f2c2c2',
+    paddingVertical: 22,
     paddingHorizontal: 20,
     alignItems: 'center',
     gap: 6,
-    shadowColor: colors.vermelho,
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.35,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.07,
     shadowRadius: 16,
-    elevation: 6,
+    elevation: 3,
   },
-  icon: { fontSize: 36, color: '#fff', fontWeight: '900' },
-  label: { fontSize: 24, fontWeight: '900', color: '#fff', letterSpacing: 1.5 },
-  subLabel: { fontSize: 13, color: 'rgba(255,255,255,0.75)' },
+  icon: { fontSize: 32, color: colors.vermelho, fontWeight: '900' },
+  label: { fontSize: 22, fontWeight: '800', color: colors.vermelhoEsc, letterSpacing: 0 },
+  subLabel: { fontSize: 13, color: colors.textoSecundario },
 });
