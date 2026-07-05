@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import AcessoScreen from './src/screens/AcessoScreen';
 import HomeScreen from './src/screens/HomeScreen';
@@ -29,19 +30,23 @@ export default function App() {
 
   if (!rotaInicial) {
     return (
-      <View style={styles.loading}>
-        <ActivityIndicator color={colors.verde} size="large" />
-      </View>
+      <SafeAreaProvider>
+        <View style={styles.loading}>
+          <ActivityIndicator color={colors.verde} size="large" />
+        </View>
+      </SafeAreaProvider>
     );
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName={rotaInicial} screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Acesso" component={AcessoScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <NavigationContainer>
+        <Stack.Navigator initialRouteName={rotaInicial} screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="Acesso" component={AcessoScreen} />
+          <Stack.Screen name="Home" component={HomeScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SafeAreaProvider>
   );
 }
 
