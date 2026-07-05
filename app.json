@@ -21,7 +21,8 @@
         "SYSTEM_ALERT_WINDOW",
         "CALL_PHONE"
       ],
-      "usesCleartextTraffic": true
+      "usesCleartextTraffic": true,
+      "softwareKeyboardLayoutMode": "resize"
     },
     "web": {
       "favicon": "./assets/favicon.png"
