@@ -84,23 +84,18 @@ export default function AcessoScreen({ navigation }) {
 
             {erro ? <Text style={styles.erroTexto}>{erro}</Text> : null}
 
-            <TouchableOpacity
-              style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
-              onPress={handleEntrar}
-              disabled={!codigoValido || carregando}
-              activeOpacity={0.85}
-            >
-              <Text style={styles.btnEntrarTexto}>
-                {carregando ? 'Entrando...' : 'Entrar'}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.ajudaBtn}>Precisa de ajuda?</Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+          <TouchableOpacity
+            style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
+            onPress={handleEntrar}
+            disabled={!codigoValido || carregando}
+            activeOpacity={0.85}
+          >
+            <Text style={styles.btnEntrarTexto}>
+              {carregando ? 'Entrando...' : 'Entrar'}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -197,11 +192,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: colors.branco,
-  },
-  ajudaBtn: {
-    fontSize: 14,
-    color: colors.verde,
-    fontWeight: '600',
-    textAlign: 'center',
   },
 });
