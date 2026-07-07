@@ -85,10 +85,6 @@ export default function AcessoScreen({ navigation }) {
               {carregando ? 'Entrando...' : 'Entrar'}
             </Text>
           </TouchableOpacity>
-
-          <TouchableOpacity activeOpacity={0.7}>
-            <Text style={styles.ajudaBtn}>Precisa de ajuda?</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -183,11 +179,5 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
     color: colors.branco,
-  },
-  ajudaBtn: {
-    fontSize: 14,
-    color: colors.verde,
-    fontWeight: '600',
-    textAlign: 'center',
   },
 });
