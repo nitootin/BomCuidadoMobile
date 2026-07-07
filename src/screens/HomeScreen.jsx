@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import {
   Alert,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { confirmarAlerta, listarMeusAlertas } from '../api/alertasApi';
 import { colors } from '../constants/colors';
 import { EmergencyCallWidget } from '../components/EmergencyCallWidget';
@@ -160,7 +160,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['top', 'left', 'right']}>
       <View style={styles.header}>
         <BrandLogo size="sm" />
         <View style={styles.headerTexto}>

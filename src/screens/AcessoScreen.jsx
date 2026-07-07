@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {
-  SafeAreaView,
+  KeyboardAvoidingView,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { loginIdoso } from '../api/authApi';
 import { BrandLogo } from '../components/BrandLogo';
 import { colors } from '../constants/colors';
@@ -35,45 +37,52 @@ export default function AcessoScreen({ navigation }) {
   }
 
   return (
-    <SafeAreaView style={styles.safeArea}>
-      <ScrollView
-        contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps="handled"
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom', 'left', 'right']}>
+      <KeyboardAvoidingView
+        style={styles.keyboardArea}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={Platform.OS === 'ios' ? 12 : 0}
       >
-        <View style={styles.logoBloco}>
-          <BrandLogo
-            size="lg"
-            centered
-            subtitle="Acompanhamento de medicacoes e cuidados"
-          />
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.cardTitulo}>Acesso do paciente</Text>
-          <Text style={styles.cardDesc}>Digite seu codigo de acesso para continuar</Text>
-
-          <View style={styles.campoBloco}>
-            <Text style={styles.campoLabel}>Codigo de acesso</Text>
-            <TextInput
-              style={styles.inputCodigo}
-              value={codigo}
-              onChangeText={(v) => {
-                const codigoLimpo = v.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 11).toUpperCase();
-                setCodigo(codigoLimpo);
-                if (erro) setErro('');
-              }}
-              maxLength={11}
-              placeholder="Digite o codigo fornecido"
-              placeholderTextColor="#9a9a9a"
-              returnKeyType="done"
-              onSubmitEditing={handleEntrar}
-              autoCapitalize="characters"
-              autoCorrect={false}
-              editable={!carregando}
+        <ScrollView
+          contentContainerStyle={styles.container}
+          keyboardShouldPersistTaps="handled"
+          keyboardDismissMode="interactive"
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.logoBloco}>
+            <BrandLogo
+              size="lg"
+              centered
+              subtitle="Acompanhamento de medicacoes e cuidados"
             />
           </View>
 
-          {erro ? <Text style={styles.erroTexto}>{erro}</Text> : null}
+          <View style={styles.card}>
+            <Text style={styles.cardTitulo}>Acesso do paciente</Text>
+            <Text style={styles.cardDesc}>Digite seu codigo de acesso para continuar</Text>
+
+            <View style={styles.campoBloco}>
+              <Text style={styles.campoLabel}>Codigo de acesso</Text>
+              <TextInput
+                style={styles.inputCodigo}
+                value={codigo}
+                onChangeText={(v) => {
+                  const codigoLimpo = v.replace(/[^a-zA-Z0-9-]/g, '').slice(0, 11).toUpperCase();
+                  setCodigo(codigoLimpo);
+                  if (erro) setErro('');
+                }}
+                maxLength={11}
+                placeholder="Digite o codigo fornecido"
+                placeholderTextColor="#9a9a9a"
+                returnKeyType="done"
+                onSubmitEditing={handleEntrar}
+                autoCapitalize="characters"
+                autoCorrect={false}
+                editable={!carregando}
+              />
+            </View>
+
+            {erro ? <Text style={styles.erroTexto}>{erro}</Text> : null}
 
           <TouchableOpacity
             style={[styles.btnEntrar, codigoValido && styles.btnEntrarOk]}
@@ -96,12 +105,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.cinzaBg,
   },
+  keyboardArea: {
+    flex: 1,
+  },
   container: {
     flexGrow: 1,
     backgroundColor: colors.cinzaBg,
     justifyContent: 'center',
     paddingHorizontal: 24,
-    paddingVertical: 48,
+    paddingTop: 48,
+    paddingBottom: 96,
   },
   logoBloco: {
     alignItems: 'center',
