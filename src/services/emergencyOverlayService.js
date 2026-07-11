@@ -6,15 +6,15 @@ async function solicitarPermissaoLigacaoDireta() {
   const resultado = await PermissionsAndroid.request(
     PermissionsAndroid.PERMISSIONS.CALL_PHONE,
     {
-      title: 'Permissao para chamada de emergencia',
-      message: 'O BomCuidado precisa desta permissao para ligar direto ao tocar no SOS.',
+      title: 'Permissão para chamada de emergência',
+      message: 'O BomCuidado precisa desta permissão para ligar direto ao tocar no SOS.',
       buttonPositive: 'Permitir',
       buttonNegative: 'Cancelar',
     }
   );
 
   if (resultado !== PermissionsAndroid.RESULTS.GRANTED) {
-    throw new Error('Permissao de chamada negada. Ative a permissao Telefone para usar a ligacao direta.');
+    throw new Error('Permissão de chamada negada. Ative a permissão Telefone para usar a ligação direta.');
   }
 }
 
@@ -24,7 +24,7 @@ export function overlayEmergenciaDisponivel() {
 
 export async function iniciarWidgetEmergencia(telefone) {
   if (Platform.OS !== 'android') {
-    throw new Error('Widget sobreposto disponivel apenas no Android.');
+    throw new Error('Widget sobreposto disponível apenas no Android.');
   }
 
   if (!EmergencyOverlay) {
@@ -36,7 +36,7 @@ export async function iniciarWidgetEmergencia(telefone) {
   const permitido = await EmergencyOverlay.canDrawOverlays();
   if (!permitido) {
     EmergencyOverlay.openOverlaySettings();
-    throw new Error('Ative a permissao "Aparecer sobre outros apps" e toque em emergencia novamente.');
+    throw new Error('Ative a permissão "Aparecer sobre outros apps" e toque em emergência novamente.');
   }
 
   await EmergencyOverlay.startOverlay(telefone);

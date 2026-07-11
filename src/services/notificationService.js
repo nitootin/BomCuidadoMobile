@@ -18,7 +18,7 @@ async function configurarCanalAndroid() {
   if (Platform.OS !== 'android') return;
 
   await Notifications.setNotificationChannelAsync('medicacoes', {
-    name: 'Medicacoes',
+    name: 'Medicações',
     importance: Notifications.AndroidImportance.HIGH,
     sound: 'default',
     vibrationPattern: [0, 250, 250, 250],
@@ -80,13 +80,13 @@ function formatarHorarioNotificacao(data) {
 }
 
 function montarConteudoNotificacao(alerta, dataAgendada) {
-  const nomeMedicacao = alerta.remedioNome || 'sua medicacao';
+  const nomeMedicacao = alerta.remedioNome || 'sua medicação';
   const horario = formatarHorarioNotificacao(dataAgendada);
 
   return {
     title: `Hora de tomar ${nomeMedicacao}`,
-    subtitle: `Medicacao das ${horario}`,
-    body: `Esta na hora da sua medicacao das ${horario}. Confirme no BomCuidado quando tomar.`,
+    subtitle: `Medicação das ${horario}`,
+    body: `Está na hora da sua medicação das ${horario}. Confirme no BomCuidado quando tomar.`,
     sound: 'default',
     priority: Notifications.AndroidNotificationPriority.HIGH,
     data: { alertaId: alerta.id, tipo: 'medicacao' },
