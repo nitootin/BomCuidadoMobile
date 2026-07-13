@@ -30,19 +30,19 @@ export function EmergencyCallWidget() {
 
       const usuario = await obterUsuario();
       if (!usuario?.id) {
-        throw new Error('Sessao do idoso nao encontrada. Faca login novamente.');
+        throw new Error('Sessão do idoso não encontrada. Faça login novamente.');
       }
 
       const contato = await buscarContatoEmergencia(usuario.id);
       const telefone = montarTelefoneContato(contato);
 
       if (!telefone) {
-        throw new Error('Contato de emergencia sem telefone cadastrado.');
+        throw new Error('Contato de emergência sem telefone cadastrado.');
       }
 
       if (Platform.OS === 'android') {
         await iniciarWidgetEmergencia(telefone);
-        Alert.alert('Emergencia', 'Widget de emergencia ativado. Ele ficara sobreposto fora do app.');
+        Alert.alert('Emergência', 'Widget de emergência ativado. Ele ficará sobreposto fora do app.');
         return;
       }
 
@@ -50,12 +50,12 @@ export function EmergencyCallWidget() {
       const podeLigar = await Linking.canOpenURL(url);
 
       if (!podeLigar) {
-        throw new Error('Este dispositivo nao permite iniciar ligacoes.');
+        throw new Error('Este dispositivo não permite iniciar ligações.');
       }
 
       await Linking.openURL(url);
     } catch (error) {
-      Alert.alert('Emergencia', error.message || 'Nao foi possivel ligar para o cuidador.');
+      Alert.alert('Emergência', error.message || 'Não foi possível ligar para o cuidador.');
     } finally {
       setLigando(false);
     }
@@ -69,7 +69,7 @@ export function EmergencyCallWidget() {
       disabled={ligando}
     >
       <Text style={styles.icon}>!</Text>
-      <Text style={styles.label}>{ligando ? 'Ligando...' : 'Emergencia'}</Text>
+      <Text style={styles.label}>{ligando ? 'Ligando...' : 'Emergência'}</Text>
       <Text style={styles.subLabel}>
         {ligando ? 'Ativando widget...' : 'Toque para ligar ao cuidador'}
       </Text>

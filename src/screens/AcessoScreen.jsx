@@ -30,7 +30,7 @@ export default function AcessoScreen({ navigation }) {
       await loginIdoso(codigo.trim());
       navigation.replace('Home');
     } catch (error) {
-      setErro(error.message || 'Nao foi possivel acessar. Tente novamente.');
+      setErro(error.message || 'Não foi possível acessar. Tente novamente.');
     } finally {
       setCarregando(false);
     }
@@ -53,16 +53,16 @@ export default function AcessoScreen({ navigation }) {
             <BrandLogo
               size="lg"
               centered
-              subtitle="Acompanhamento de medicacoes e cuidados"
+              subtitle="Acompanhamento de medicações e cuidados"
             />
           </View>
 
           <View style={styles.card}>
             <Text style={styles.cardTitulo}>Acesso do paciente</Text>
-            <Text style={styles.cardDesc}>Digite seu codigo de acesso para continuar</Text>
+            <Text style={styles.cardDesc}>Digite seu código de acesso para continuar</Text>
 
             <View style={styles.campoBloco}>
-              <Text style={styles.campoLabel}>Codigo de acesso</Text>
+              <Text style={styles.campoLabel}>Código de acesso</Text>
               <TextInput
                 style={styles.inputCodigo}
                 value={codigo}
@@ -72,7 +72,7 @@ export default function AcessoScreen({ navigation }) {
                   if (erro) setErro('');
                 }}
                 maxLength={11}
-                placeholder="Digite o codigo fornecido"
+                placeholder="Digite o código fornecido"
                 placeholderTextColor="#9a9a9a"
                 returnKeyType="done"
                 onSubmitEditing={handleEntrar}

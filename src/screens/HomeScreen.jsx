@@ -15,10 +15,10 @@ import { BrandLogo } from '../components/BrandLogo';
 import { agendarNotificacoesMedicacoes } from '../services/notificationService';
 
 function formatarHorario(data) {
-  if (!data) return 'Horario nao informado';
+  if (!data) return 'Horário não informado';
 
   const valor = new Date(data);
-  if (Number.isNaN(valor.getTime())) return 'Horario nao informado';
+  if (Number.isNaN(valor.getTime())) return 'Horário não informado';
 
   return valor.toLocaleTimeString('pt-BR', {
     hour: '2-digit',
@@ -140,7 +140,7 @@ export default function HomeScreen() {
       const proximasMedicacoes = selecionarProximasMedicacoes(lista);
       setMedicacoes(proximasMedicacoes.map(normalizarAlerta));
     } catch (error) {
-      setErro(error.message || 'Nao foi possivel carregar os alertas.');
+      setErro(error.message || 'Não foi possível carregar os alertas.');
     } finally {
       setCarregando(false);
     }
@@ -155,7 +155,7 @@ export default function HomeScreen() {
       await confirmarAlerta(id);
       await carregarAlertas();
     } catch (error) {
-      Alert.alert('Erro', error.message || 'Nao foi possivel confirmar o alerta.');
+      Alert.alert('Erro', error.message || 'Não foi possível confirmar o alerta.');
     }
   }
 
@@ -177,8 +177,8 @@ export default function HomeScreen() {
         <EmergencyCallWidget />
 
         <View style={styles.secaoCabecalho}>
-          <Text style={styles.secaoTitulo}>Proximas medicacoes</Text>
-          <Text style={styles.secaoSubtitulo}>Alertas pendentes e confirmacoes do dia</Text>
+          <Text style={styles.secaoTitulo}>Próximas medicações</Text>
+          <Text style={styles.secaoSubtitulo}>Alertas pendentes e confirmações do dia</Text>
         </View>
 
         {carregando ? (
@@ -195,7 +195,7 @@ export default function HomeScreen() {
           ))
         ) : (
           <View style={styles.estadoCard}>
-            <Text style={styles.estadoTexto}>Nenhuma medicacao pendente.</Text>
+            <Text style={styles.estadoTexto}>Nenhuma medicação pendente.</Text>
           </View>
         )}
       </ScrollView>
